@@ -1,0 +1,11 @@
+# Django #
+*.log
+*.py[cod]
+__pycache__/
+db.sqlite3
+media
+/static
+
+# pytest #
+.pytest_cache/*
+pytest.ini
