@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Главная :: {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div>
+    <h3 class="text-secondary">Полезного ничего нет, но вот вам котики</h3>
+    <img src="{% static 'img/cats.jpg' %}" alt="котики">
+</div>
+{% endblock %}
