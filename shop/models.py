@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from mptt.models import MPTTModel, TreeForeignKey
 from slugify import slugify
 
@@ -10,6 +11,9 @@ class Category(MPTTModel):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('category', kwargs={"slug": self.slug})
 
     def get_products(self):
         """Return all self and descendants products"""
@@ -40,6 +44,9 @@ class Brand(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse('brand', kwargs={"slug": self.slug})
+
     class Meta:
         verbose_name = 'Бренд'
         verbose_name_plural = 'Бренды'
@@ -61,6 +68,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('product', kwargs={'slug': self.slug})
 
     def save(self, **kwargs):
         super(Product, self).save()
