@@ -18,8 +18,17 @@ def get_brand(request, slug):
     return HttpResponse(f"<h3>Бренд - {slug}</h3>")
 
 
-def get_category(request, slug):
-    return HttpResponse(f"<h3>Категория - {slug}</h3>")
+class ProductsByCategory(DetailView):
+    model = Category
+    template_name = 'shop/catalog_category.html'
+    context_object_name = 'category'
+    allow_empty = False
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        context['ancestors_tree'] = context['category'].get_ancestors(include_self=True)
+        return context
 
 
 class ProductsCatalog(ListView):
