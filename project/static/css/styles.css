@@ -1,0 +1,56 @@
+html{
+    overflow-x: hidden;
+}
+.navbar{
+    padding-left: 100px;
+    background-color: rgba(238, 238, 238, 0.9);
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+.nav-link{
+    font-size: 18px;
+}
+.content{
+    padding-left: 100px;
+    margin: 10px 0px 10px 0px;
+}
+footer{
+    background-color: #eee;
+}
+.nav-search{
+    margin-left: 200px;
+    align-self: center;
+}
+.search-panel{
+    width: 550px;
+    position: relative;
+    align-self: center;
+}
+.search-panel input{
+    width: 100%;
+    height: 38px;
+    padding-left: 10px;
+    outline: none;
+    border: 1px solid #ffee00;
+}
+.search-panel button{
+    position: absolute;
+    right: 0;
+    width: 38px;
+    height: 38px;
+    padding: 6px;
+    background-color: #ffee00;
+    border: none;
+}
+.nav-login, .nav-cart{
+    align-self: center;
+    margin: 0px 8px;
+    cursor: pointer;
+}
+.nav-login-wrapper, .nav-cart-wrapper{
+    width: 38px;
+    height: 38px;
+}
+.nav-login{
+    margin-left: 20px
+}
