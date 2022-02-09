@@ -1,0 +1,119 @@
+a {
+    text-decoration: none;
+    color: #000;
+}
+a:hover{
+    color: black;
+}
+
+.breadcrumbs{
+    margin: 10px 0px 10px 5px;
+    font-size: 14px;
+}
+.bc-item{
+    text-decoration: none;
+    color: #8a8a8a;
+    padding-right: 15px;
+}
+.symbol-more{
+    padding-left: 5px;
+}
+.bc-item:hover{
+    color: #f7a400;
+}
+
+.category-title{
+    font-size: 32px;
+    margin-bottom: 30px;
+    padding-left: 10px;
+}
+
+.categories{
+    width: 325px;
+}
+.categories-caption{
+    padding: 10px 15px 10px 15px;
+    font-size: 16px;
+    background-color: rgba(238, 238, 238, 0.9);
+}
+.root{
+    padding: 10px 20px 10px 0px;
+    border: 0.5px solid rgba(238, 238, 238, 0.9);
+}
+.root a{
+    font-size: 14px;
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 2px 0px;
+}
+.root a:hover, .root a.active{
+    border-radius: 2px;
+    background-color: #fff780;
+}
+.categories-item a.root_node{
+    font-size: 16px;
+}
+.categories-item{
+    padding-left: 15px;
+}
+.categories-item a::before{
+    content: url(../img/go_right.svg);
+    width: 1em;
+    height: 1em;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: top;
+    padding: 0.2em;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    text-align: center;
+}
+.categories-item.opened > a{
+    font-weight: bold;
+}
+.products-greed{
+    display: flex;
+    flex-flow: row wrap;
+}
+.product{
+    width: 330px;
+    height: auto;
+}
+.product-wrapper:hover{
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+.product-item{
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 20px;
+}
+.product-description{
+    display: flex;
+    flex-flow: column nowrap;
+    margin-top: 5px;
+}
+.product-top{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+.product-price{
+    align-self: center;
+    font-size: 18px;
+    padding-left: 10px;
+    color: red;
+}
+.product-btn_cart{
+    padding: 9px 10px;
+    background-color: #f7a400;
+    border-radius: 7.5px;
+}
+.product-title, .product-brand{
+    font-size: 14px;
+    margin-top: 5px;
+}
+.product-brand{
+    font-weight: bold;
+}
+
+

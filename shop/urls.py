@@ -7,5 +7,5 @@ urlpatterns = [
     path('product/<str:slug>', ViewProduct.as_view(), name="product"),
     path('brand/<str:slug>', get_brand, name="brand"),
     path('catalog/<str:slug>', get_category, name="category"),
-    path('catalog', get_catalog, name="catalog")
+    path('catalog', ProductsCatalog.as_view(), name="catalog")
 ]
