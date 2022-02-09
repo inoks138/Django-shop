@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block additional_links %}
+<link href="{% static 'css/product_styles.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}
+{{ product.title }} :: {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs">
+    <a class="bc-item" href="{% url 'home' %}">
+        Главная
+        <span class="symbol-more">></span>
+    </a>
+    {% for category in product.category.get_family %}
+    <a class="bc-item" href="{{ category.get_absolute_url }}">{{ category.title }}</a>
+    <span class="symbol-more">></span>
+    {% endfor %}
+    <span class="bc-title">{{ product.title }}</span>
+</div>
+
+
+<div class="row">
+    <div class="col-md-4">
+        <img src="{{ product.photo.url }}" alt="{{ product.title }}" width="440px">
+    </div>
+    <div class="col-md-5">
+        <p class="brand">{{ product.brand.title }}</p>
+        <p class="title">{{ product.title }} {{ product.brand.title }}</p>
+        <p class="code">Код товара: {{ product.pk }}</p>
+        <p class="price">{{ product.price }} грн</p>
+    </div>
+</div>
+
+<div class="bottom-info col-md-9 mb-4 mt-4">
+    <div class="tabs-nav row">
+        <div class="tabs-nav-item active">
+            <span>Описание товара</span>
+        </div>
+        <div class="tabs-nav-item">
+            <span>Доставка и возврат</span>
+        </div>
+    </div>
+
+    <div class="description-tab row tab">
+        <div class="col-md-5">
+
+            <div class="prop">
+                <div class="prop-line">
+                    <div class="prop-name">
+                        <span>Бренд</span>
+                    </div>
+                    <div class="prop-value">
+                        <span>{{ product.brand.title }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prop">
+                <div class="prop-line">
+                    <div class="prop-name">
+                        <span>Код товара</span>
+                    </div>
+                    <div class="prop-value">
+                        <span>{{ product.pk }}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-7">
+            <p class="description">{{ product.description }}</p>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,97 @@
+.breadcrumbs{
+    margin: 10px 0px 10px 5px;
+}
+.bc-item{
+    font-size: 14px;
+    text-decoration: none;
+    color: #000;
+}
+.symbol-more{
+    font-weight: bold;
+}
+.bc-item:hover{
+    color: #f7a400;
+}
+.brand{
+    margin-top: 5px;
+    font-size: 20px;
+    font-weight: bold;
+}
+.title{
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+.code, .bc-title{
+    font-size: 14px;
+    color: #8a8a8a;
+}
+.price{
+    font-size: 22px;
+}
+
+
+
+.tabs-nav{
+    position: relative;
+}
+.tabs-nav-item{
+    font-size: 17px;
+    padding: 6px 0px 6px 0px;
+    margin-left: 12px;
+    margin-right: 20px;
+    width: auto;
+}
+.tabs-nav-item.active{
+    color: #f7a400;
+    font-weight: bold;
+    border-bottom: 2px solid #f7a400;
+    z-index: 1;
+}
+.tabs-nav::after{
+    content: "";
+    display: block;
+    width: 100%;
+    height: 0.5px;
+    margin-left: 12px;
+    background-color: #c4c4c4;
+    position: absolute;
+    bottom: 0;
+    z-index: 0;
+}
+.tab{
+    margin-top: 10px;
+}
+.prop-line{
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    width: 400px;
+    z-index: 0;
+    margin: 5px 0px 5px 0px;
+}
+.prop-name{
+    color: #8a8a8a;
+    padding-right: 5px;
+}
+.prop-value{
+    padding-left: 5px;
+}
+.prop-name, .prop-value{
+    font-size: 15px;
+    background-color: #fff;
+    z-index: 1;
+}
+.prop-line::after{
+    content: "";
+    display: block;
+    border: 0.75px dashed #c4c4c4;
+    width: 97.5%;
+    position: absolute;
+    top: 13px;
+    left: 0;
+    height: 0;
+}
+.description{
+    font-size: 14.4px;
+    padding-left: 30px;
+}

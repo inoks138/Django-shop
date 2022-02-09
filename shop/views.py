@@ -1,13 +1,17 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.generic import DetailView
+from .models import Product
 
 
 def index(request):
     return render(request, 'shop/index.html')
 
 
-def get_product(request, slug):
-    return HttpResponse(f"<h3>Товар - {slug}</h3>")
+class ViewProduct(DetailView):
+    model = Product
+    context_object_name = 'product'
+    allow_empty = False
 
 
 def get_brand(request, slug):
