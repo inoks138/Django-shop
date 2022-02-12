@@ -1,0 +1,9 @@
+{% for list_items in lists_brands %}
+    <div class="col-md-2">
+        {% for item in list_items %}
+        <div class="brands-item-wrap">
+            <a href="#" class="brands-item">{{ item.title }}</a>
+        </div>
+        {% endfor %}
+    </div>
+{% endfor %}

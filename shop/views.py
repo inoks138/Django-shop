@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
-from .models import Product, Category
+from .models import Product, Category, Brand
 
 
 def index(request):
@@ -41,3 +41,7 @@ class ProductsCatalog(ListView):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.filter(level__in=[0, 1])
         return context
+
+
+def get_brands(request):
+    return render(request, 'shop/brands.html')

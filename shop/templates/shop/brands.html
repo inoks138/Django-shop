@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load brands_tags %}
+
+{% block additional_links %}
+<link href="{% static 'css/catalog_styles.css' %}" rel="stylesheet">
+<link href="{% static 'css/brands_styles.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}
+Бренды :: {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs">
+    <a class="bc-item" href="{% url 'home' %}">
+        Главная
+        <span class="symbol-more">></span>
+    </a>
+    Бренды
+</div>
+<div class="category-title">Бренды</div>
+<div class="row">
+    {% show_brands %}
+
+</div>
+
+{% endblock %}
