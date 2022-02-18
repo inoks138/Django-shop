@@ -27,6 +27,7 @@ class ProductsByCategory(DetailView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
+        context['brands'] = Brand.objects.all()
         context['ancestors_tree'] = context['category'].get_ancestors(include_self=True)
         return context
 
@@ -40,6 +41,10 @@ class ProductsCatalog(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.filter(level__in=[0, 1])
+        context['brands'] = Brand.objects.all()
+        if 'brands' in self.request.GET:
+            brands = self.request.GET['brands'].split(',')
+            context['products'] = context['products'].filter(brand__slug__in=brands)
         return context
 
 

@@ -116,4 +116,107 @@ a:hover{
     font-weight: bold;
 }
 
+.filters{
+    display: flex;
+    flex-flow: row wrap;
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+.dropdown{
+    position: relative;
+}
+.dropdown__head{
+    border: 1px solid black;
+    border-radius: 7.5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.dropdown__head:hover{
+    box-shadow: 0 6px 12px rgb(0 0 0 / 12%);
+}
+.dropdown__body{
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: -1px;
+    width: 320px;
+    z-index: 1;
+    border-top: 1px;
+    background-color: white;
+    box-shadow: 0 6px 12px rgb(0 0 0 / 12%);
+    border-top: 1px solid black;
+}
+.dropdown__show .dropdown__body{
+    display: block;
+}
+.dropdown__options{
+    margin: 10px 0px;
+    padding: 0px 10px;
+    max-height: 240px;
+    min-height: 0;
+    overflow-x: hidden;
+}
+.filter-checkbox-wrap{
+    display: flex;
+    padding: 0px 10px;
+}
+.filter-checkbox{
+    align-self: center;
+    cursor: pointer;
+}
+.filter-checkbox-label{
+    flex: 1 1 auto;
+    padding: 2.5px 10px;
+    cursor: pointer;
+}
+.filter-checkbox-label:hover, .filter-checkbox:hover + .filter-checkbox-label{
+    color: rgba(0,0,0,.55);
+}
+.dropdown__submit{
+    margin: 7.5px 20px;
+}
+.filter-button-submit{
+    width: 100%;
+    padding: 5px 0px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: black;
+    cursor: pointer;
+}
+.filter-button-submit:hover{
+    color: #fff780;
+}
+.dropdown__search{
+    padding: 0px 20px;
+    margin: 10px 0px;
+}
+.filter-search-wrap{
+    display: flex;
+    flex-flow: row nowrap;
+    background-color: rgba(238, 238, 238, 0.9);
+    border-radius: 8.5px;
+}
+.button-search-confirm, .button-search-clear{
+    display: flex;
+    width: 30px;
+    height: 30px;
+    padding: 5.5px;
+    cursor: pointer;
+}
+.button-search-confirm svg, .button-search-clear svg{
+    align-self: center;
+}
+.filter-search{
+    flex: 1 1 auto;
+    font-size: 14px;
+    background-color: inherit;
+    padding: 3px;
+    border: none;
+    outline: none;
+}
 
+.hidden{
+    display: none;
+}
