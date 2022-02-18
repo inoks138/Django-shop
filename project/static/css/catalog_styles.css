@@ -90,7 +90,7 @@ a:hover{
 .product-description{
     display: flex;
     flex-flow: column nowrap;
-    margin-top: 5px;
+    margin-top: 15px;
 }
 .product-top{
     display: flex;
@@ -104,9 +104,10 @@ a:hover{
     color: red;
 }
 .product-btn_cart{
-    padding: 9px 10px;
+    padding: 4.5px 10px;
     background-color: #f7a400;
     border-radius: 7.5px;
+    cursor: pointer;
 }
 .product-title, .product-brand{
     font-size: 14px;

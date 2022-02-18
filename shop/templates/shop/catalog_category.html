@@ -17,6 +17,10 @@
         Главная
         <span class="symbol-more">></span>
     </a>
+    <a class="bc-item" href="{% url 'catalog' %}">
+        Каталог
+        <span class="symbol-more">></span>
+    </a>
     {% for ancestor in category.get_ancestors %}
     <a class="bc-item" href="{{ ancestor.get_absolute_url }}">
         {{ ancestor.title }}
@@ -123,27 +127,29 @@
         <div class="products-greed">
             {% for item in category.get_products %}
             <div class="product">
-                <a href="{{ item.get_absolute_url }}">
-                    <div class="product-wrapper">
-                        <div class="product-item">
+                <div class="product-wrapper">
+                    <div class="product-item">
+                        <a href="{{ item.get_absolute_url }}">
                             <div class="product-photo">
                                 <img src="{{ item.photo.url }}" alt="{{ item.title }}" width="100%" height="100%">
                             </div>
-                            <div class="product-description">
-                                <div class="product-top">
-                                    <div class="product-price">{{ item.price }} грн</div>
-                                    <div class="product-btn_cart">
-                                        <span>Купить</span>
-                                    </div>
-                                </div>
-                                <div class="product-mid">
-                                    <div class="product-title">{{ item.title }}</div>
-                                    <div class="product-brand">{{ item.brand.title }}</div>
+                        </a>
+
+                        <div class="product-description">
+                            <div class="product-top">
+                                <div class="product-price">{{ item.price }} грн</div>
+                                <div class="product-btn_cart">
+                                    <span>Купить</span>
                                 </div>
                             </div>
+                            <div class="product-mid">
+                                <div class="product-title">{{ item.title }}</div>
+                                <div class="product-brand">{{ item.brand.title }}</div>
+                            </div>
                         </div>
+
                     </div>
-                </a>
+                </div>
             </div>
 
             {% endfor %}
