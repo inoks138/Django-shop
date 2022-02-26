@@ -1,0 +1,57 @@
+{% load static %}
+<div id="cart">
+    <div class="cart-header">
+        <div id="btn-cart-close">
+            <img src="{% static 'img/close-circle.png' %}" width=100% height=100% alt="close">
+        </div>
+    </div>
+    <div class="cart-table">
+        <div class="cart-table-caption">
+            <div class="cart-table-caption-price">Цена</div>
+            <div class="cart-table-caption-count">Количество</div>
+            <div class="cart-table-caption-totalprice">Стоимость</div>
+        </div>
+        <div id="cart-items">
+            {% for item in cart %}
+            <div class="cart-item" id="cart-item-{{ item.product.slug }}">
+                <div class="cart-item-img-wrap">
+                    <a href="{{ item.product.get_absolute_url }}">
+                        <img src="{{ item.product.photo.url }}" width=100% height=100% alt="{{ item.product.title }}">
+                    </a>
+                </div>
+                <div class="cart-item-description">
+                    <a class="product-ref" href="{{ item.product.get_absolute_url }}">
+                        <div class="cart-item-brand">{{ item.product.brand }}</div>
+                        <div class="cart-item-title">{{ item.product }}</div>
+                    </a>
+                </div>
+                <div class="cart-item-price">{{ item.price }}грн</div>
+                <div id="item-{{ item.product.slug }}-count" class="cart-item-count">{{ item.quantity }}</div>
+                <div id="item-{{ item.product.slug }}-totalprice" class="cart-item-totalprice">
+                    {{ item.total_price }}грн
+                </div>
+                <form action="{% url 'remove_cart' item.product.pk %}" method="get" class="cart-item-delete-form"
+                      id="item-{{ item.product.slug }}-delete">
+                    <button type="submit" class="cart-item-delete">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72"><path fill-rule="evenodd" d="M38.6,38.6 L38.6,59.4 C38.6,60.8359403 37.4359403,62 36,62 C34.5640597,62 33.4,60.8359403 33.4,59.4 L33.4,38.6 L12.6,38.6 C11.1640597,38.6 10,37.4359403 10,36 C10,34.5640597 11.1640597,33.4 12.6,33.4 L33.4,33.4 L33.4,12.6 C33.4,11.1640597 34.5640597,10 36,10 C37.4359403,10 38.6,11.1640597 38.6,12.6 L38.6,33.4 L59.4,33.4 C60.8359403,33.4 62,34.5640597 62,36 C62,37.4359403 60.8359403,38.6 59.4,38.6 L38.6,38.6 Z" transform="rotate(45 36 36)"></path></svg>
+                    </button>
+                </form>
+
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    <div class="cart-footer">
+        <div id="cart-continue-shopping">
+            <div id="continue-shopping">Продолжить покупки</div>
+        </div>
+        <div class="cart-order">
+            <div class="total-price-wrap">
+                <div>Итого:</div>
+                <div id="total-price"> {{ cart.get_total_price }} грн</div>
+            </div>
+            <a id="order-ref" href="#">Оформить заказ</a>
+        </div>
+    </div>
+</div>
