@@ -74,8 +74,8 @@ class Product(models.Model):
 
     def save(self, **kwargs):
         super(Product, self).save()
-        if not self.slug.endswith('-' + str(self.pk)):
-            self.slug += '-' + str(self.id)
+        if not self.slug.endswith(self.brand.slug + '-' + str(self.pk)):
+            self.slug += '-' + self.brand.slug + '-' + str(self.id)
             super(Product, self).save()
 
     class Meta:

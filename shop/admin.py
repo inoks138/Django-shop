@@ -34,7 +34,7 @@ class ProductAdmin(admin.ModelAdmin):
               'get_photo', 'is_available', 'created_at', 'updated_at')
     readonly_fields = ('get_photo', 'created_at', 'updated_at')
     save_on_top = True
-    prepopulated_fields = {"slug": ("title", "brand")}
+    prepopulated_fields = {"slug": ("title",)}
 
     def get_photo(self, obj):
         return mark_safe(f'<img src="{obj.photo.url}" width="75">')
