@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 from .models import Product, Category, Brand
+from cart.forms import CartAddProductForm
 
 
 def index(request):
@@ -12,6 +13,11 @@ class ViewProduct(DetailView):
     model = Product
     context_object_name = 'product'
     allow_empty = False
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cart_product_form'] = CartAddProductForm()
+        return context
 
 
 def get_brand(request, slug):
@@ -29,6 +35,11 @@ class ProductsByCategory(DetailView):
         context['categories'] = Category.objects.all()
         context['brands'] = Brand.objects.all()
         context['ancestors_tree'] = context['category'].get_ancestors(include_self=True)
+        context['products'] = context['category'].get_products()
+        if 'brands' in self.request.GET:
+            brands = self.request.GET['brands'].split(',')
+            context['products'] = context['products'].filter(brand__slug__in=brands)
+
         return context
 
 

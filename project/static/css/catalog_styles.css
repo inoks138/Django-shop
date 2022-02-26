@@ -107,6 +107,7 @@ a:hover{
     padding: 4.5px 10px;
     background-color: #f7a400;
     border-radius: 7.5px;
+    border: none;
     cursor: pointer;
 }
 .product-title, .product-brand{

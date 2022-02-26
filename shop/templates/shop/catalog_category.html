@@ -125,7 +125,8 @@
 
         </div>
         <div class="products-greed">
-            {% for item in category.get_products %}
+            {% for item in products %}
+
             <div class="product">
                 <div class="product-wrapper">
                     <div class="product-item">
@@ -138,9 +139,12 @@
                         <div class="product-description">
                             <div class="product-top">
                                 <div class="product-price">{{ item.price }} грн</div>
-                                <div class="product-btn_cart">
-                                    <span>Купить</span>
-                                </div>
+                                <form action="{% url 'add_cart' item.id %}" method="get" class="add_cart_form">
+                                    <button type="submit" class="product-btn_cart">
+                                        <span>Купить</span>
+                                    </button>
+                                </form>
+
                             </div>
                             <div class="product-mid">
                                 <div class="product-title">{{ item.title }}</div>

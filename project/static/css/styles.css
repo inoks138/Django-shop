@@ -42,7 +42,7 @@ footer{
     background-color: #ffee00;
     border: none;
 }
-.nav-login, .nav-cart{
+.nav-login, #nav-cart{
     align-self: center;
     margin: 0px 8px;
     cursor: pointer;
