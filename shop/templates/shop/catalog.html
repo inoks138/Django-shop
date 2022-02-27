@@ -18,12 +18,15 @@
         Главная
         <span class="symbol-more">></span>
     </a>
+    {% block breadcrumbs %}
     Каталог
+    {% endblock%}
 </div>
-<div class="category-title">Каталог одежды</div>
+<div class="category-title">{% block category_title %}Каталог одежды{% endblock %}</div>
 <div class="row">
     <div class="categories col-md-3">
         <div class="categories-caption">Категории:</div>
+        {% block root %}
         <div class="root">
             {% recursetree categories %}
 
@@ -44,7 +47,7 @@
             {% endrecursetree %}
 
         </div>
-
+        {% endblock %}
     </div>
     <div class="col-md-9">
         <div class="filters">

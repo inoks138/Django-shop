@@ -1,189 +1,67 @@
-{% extends 'base.html' %}
+{% extends 'shop/catalog.html' %}
 {% load static %}
 {% load mptt_tags %}
-{% load query_param_tags %}
-
-{% block additional_links %}
-<link href="{% static 'css/catalog_styles.css' %}" rel="stylesheet">
-<script src="{% static 'js/catalog_scripts.js' %}"></script>
-{% endblock %}
 
 {% block title %}
 {{ category.title }} :: {{ block.super }}
 {% endblock %}
 
-{% block content %}
-<div class="breadcrumbs">
-    <a class="bc-item" href="{% url 'home' %}">
-        Главная
-        <span class="symbol-more">></span>
-    </a>
-    <a class="bc-item" href="{% url 'catalog' %}">
-        Каталог
-        <span class="symbol-more">></span>
-    </a>
-    {% for ancestor in category.get_ancestors %}
-    <a class="bc-item" href="{{ ancestor.get_absolute_url }}">
-        {{ ancestor.title }}
-        <span class="symbol-more">></span>
-    </a>
-    {% endfor %}
-    {{ category.title }}
-</div>
-<div class="category-title">{{ category.title }}</div>
-<div class="row">
-    <div class="categories col-md-3">
-        <div class="categories-caption">Категории:</div>
-        <div class="root">
-            {% recursetree categories %}
+{% block breadcrumbs %}
 
-            {% if node in ancestors_tree %}
-            <div class="categories-item opened">
-                {% if node.pk == category.pk %}
-                {% if node.is_root_node %}
-                <a class="root_node active" href="{{ node.get_absolute_url }}">{{ node.title }}</a>
-                {% else %}
-                <a class="active" href="{{ node.get_absolute_url }}">{{ node.title }}</a>
-                {% endif %}
-                {% else %}
-                {% if node.is_root_node %}
-                <a class="root_node" href="{{ node.get_absolute_url }}">{{ node.title }}</a>
-                {% else %}
-                <a href="{{ node.get_absolute_url }}">{{ node.title }}</a>
-                {% endif %}
-                {% endif %}
+<a class="bc-item" href="{% url 'catalog' %}">
+    Каталог
+    <span class="symbol-more">></span>
+</a>
+{% for ancestor in category.get_ancestors %}
+<a class="bc-item" href="{{ ancestor.get_absolute_url }}">
+    {{ ancestor.title }}
+    <span class="symbol-more">></span>
+</a>
+{% endfor %}
+{{ category.title }}
 
-                {% if not node.is_leaf_node %}
-                <div class="children">
-                    {{ children }}
-                </div>
-                {% endif %}
-            </div>
-            {% else %}
-            <div class="categories-item">
-                {% if node.is_root_node %}
-                <a class="root_node" href="{{ node.get_absolute_url }}">{{ node.title }}</a>
-                {% else %}
-                <a href="{{ node.get_absolute_url }}">{{ node.title }}</a>
-                {% endif %}
-            </div>
-            {% endif %}
-            {% endrecursetree %}
+{% endblock%}
 
+{% block category_title %}
+{{ category.title }}
+{% endblock %}
+
+{% block root %}
+<div class="root">
+    {% recursetree categories %}
+
+    {% if node in ancestors_tree %}
+    <div class="categories-item opened">
+        {% if node.pk == category.pk %}
+        {% if node.is_root_node %}
+        <a class="root_node active" href="{{ node.get_absolute_url }}">{{ node.title }}</a>
+        {% else %}
+        <a class="active" href="{{ node.get_absolute_url }}">{{ node.title }}</a>
+        {% endif %}
+        {% else %}
+        {% if node.is_root_node %}
+        <a class="root_node" href="{{ node.get_absolute_url }}">{{ node.title }}</a>
+        {% else %}
+        <a href="{{ node.get_absolute_url }}">{{ node.title }}</a>
+        {% endif %}
+        {% endif %}
+
+        {% if not node.is_leaf_node %}
+        <div class="children">
+            {{ children }}
         </div>
-
+        {% endif %}
     </div>
-    <div class="col-md-9">
-        <div class="filters">
-
-            <div id="filter_brand" class="dropdown">
-                <div class="dropdown__head">
-                    <div class="dropdown__caption">Бренды</div>
-                </div>
-
-                <div class="dropdown__body">
-                    <form name="filter_brand" method="get">
-
-                        <div class="dropdown__search">
-                            <div class="filter-search-wrap">
-                                <div class="button-search-confirm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
-                                        <path fill-rule="evenodd"
-                                              d="M3.93531329,20.9349871 C3.93531329,11.5561129 11.5855623,3.92531007 20.9883375,3.92531007 C30.3911128,3.92531007 38.0413618,11.5561129 38.0413618,20.9349871 C38.0413618,30.3138613 30.3911128,37.944664 20.9883375,37.944664 C11.5855623,37.944664 3.93531329,30.3138613 3.93531329,20.9349871 M47.2316301,43.5329971 L37.4943532,33.82178 C40.292361,30.2641407 41.9766751,25.7958294 41.9766751,20.9349871 C41.9766751,9.39195857 32.5607821,0 20.9883375,0 C9.41589293,0 0,9.39195857 0,20.9349871 C0,32.4780155 9.41589293,41.8699741 20.9883375,41.8699741 C25.7986021,41.8699741 30.2245178,40.2291945 33.7676116,37.5037209 L43.5219414,47.2332561 C44.0335321,47.7435464 44.7051589,48 45.3767858,48 C46.0484126,48 46.7200394,47.7435464 47.2316301,47.2332561 C48.2561233,46.2100586 48.2561233,44.5548862 47.2316301,43.5329971"
-                                              transform="translate(12 12)"></path>
-                                    </svg>
-                                </div>
-                                <input class="filter-search" type="text" name="brand_search" id="brand_search"
-                                       autocomplete="off" placeholder="Поиск" value="">
-                                <div class="button-search-clear">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
-                                        <path fill-rule="evenodd"
-                                              d="M38.6,38.6 L38.6,59.4 C38.6,60.8359403 37.4359403,62 36,62 C34.5640597,62 33.4,60.8359403 33.4,59.4 L33.4,38.6 L12.6,38.6 C11.1640597,38.6 10,37.4359403 10,36 C10,34.5640597 11.1640597,33.4 12.6,33.4 L33.4,33.4 L33.4,12.6 C33.4,11.1640597 34.5640597,10 36,10 C37.4359403,10 38.6,11.1640597 38.6,12.6 L38.6,33.4 L59.4,33.4 C60.8359403,33.4 62,34.5640597 62,36 C62,37.4359403 60.8359403,38.6 59.4,38.6 L38.6,38.6 Z"
-                                              transform="rotate(45 36 36)"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="dropdown__options">
-                            {% for brand in brands %}
-                            <div class="filter-checkbox-wrap">
-                                <input type="checkbox" class="filter-checkbox" id="{{ brand.slug }}"
-                                       name="{{ brand.slug }}">
-                                <label for="{{ brand.slug }}" class="filter-checkbox-label">{{ brand }}</label>
-                            </div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="dropdown__submit">
-                            <button type="submit" class="filter-button-submit">Применить</button>
-                        </div>
-
-                    </form>
-                </div>
-
-            </div>
-
-        </div>
-        <div class="products-greed">
-            {% for item in page_obj %}
-
-            <div class="product">
-                <div class="product-wrapper">
-                    <div class="product-item">
-                        <a href="{{ item.get_absolute_url }}">
-                            <div class="product-photo">
-                                <img src="{{ item.photo.url }}" alt="{{ item.title }}" width="100%" height="100%">
-                            </div>
-                        </a>
-
-                        <div class="product-description">
-                            <div class="product-top">
-                                <div class="product-price">{{ item.price }} грн</div>
-                                <form action="{% url 'add_cart' item.id %}" method="get" class="add_cart_form">
-                                    <button type="submit" class="product-btn_cart">
-                                        <span>Купить</span>
-                                    </button>
-                                </form>
-
-                            </div>
-                            <div class="product-mid">
-                                <div class="product-title">{{ item.title }}</div>
-                                <div class="product-brand">{{ item.brand.title }}</div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            {% endfor %}
-        </div>
-    </div>
-    {% if page_obj.has_other_pages %}
-    <div class="pagination">
-        <div class="page-nav-links">
-            {% if page_obj.has_previous %}
-            <a class="page-numbers" href="?{% param_replace page=page_obj.previous_page_number %}"><i class="fa"> < </i></a>
-            {% endif %}
-
-            {% for p in page_obj.paginator.page_range %}
-
-            {% if page_obj.number == p %}
-            <span class="page-numbers page-current">{{ p }}</span>
-            {% elif p > page_obj.number|add:-4 and p < page_obj.number|add:4 %}
-            <a class="page-numbers" href="?{% param_replace page=p %}">{{ p }}</a>
-            {% endif %}
-
-            {% endfor %}
-
-            {% if page_obj.has_next %}
-            <a class="page-numbers" href="?{% param_replace page=page_obj.next_page_number %}"><i class="fa"> > </i></a>
-            {% endif %}
-
-        </div>
+    {% else %}
+    <div class="categories-item">
+        {% if node.is_root_node %}
+        <a class="root_node" href="{{ node.get_absolute_url }}">{{ node.title }}</a>
+        {% else %}
+        <a href="{{ node.get_absolute_url }}">{{ node.title }}</a>
+        {% endif %}
     </div>
     {% endif %}
-</div>
+    {% endrecursetree %}
 
+</div>
 {% endblock %}
