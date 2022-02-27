@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load mptt_tags %}
+{% load query_param_tags %}
 
 {% block additional_links %}
 <link href="{% static 'css/catalog_styles.css' %}" rel="stylesheet">
@@ -98,7 +99,7 @@
 
         </div>
         <div class="products-greed">
-            {% for item in products %}
+            {% for item in page_obj %}
 
             <div class="product">
                 <div class="product-wrapper">
@@ -131,6 +132,30 @@
 
             {% endfor %}
         </div>
+        {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            <div class="page-nav-links">
+                {% if page_obj.has_previous %}
+                <a class="page-numbers" href="?{% param_replace page=page_obj.previous_page_number %}"><i class="fa"> < </i></a>
+                {% endif %}
+
+                {% for p in page_obj.paginator.page_range %}
+
+                {% if page_obj.number == p %}
+                <span class="page-numbers page-current">{{ p }}</span>
+                {% elif p > page_obj.number|add:-4 and p < page_obj.number|add:4 %}
+                <a class="page-numbers" href="?{% param_replace page=p %}">{{ p }}</a>
+                {% endif %}
+
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <a class="page-numbers" href="?{% param_replace page=page_obj.next_page_number %}"><i class="fa"> > </i></a>
+                {% endif %}
+
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
