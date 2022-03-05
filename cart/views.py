@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.views import View
 from shop.models import Product
 from .cart import Cart
@@ -10,7 +11,6 @@ class AddAjaxHandlerView(View):
         cart = Cart(request)
         product = get_object_or_404(Product, id=pk)
         cart.add(product)
-
         return JsonResponse({
             'pk': product.pk,
             'title': product.title,
@@ -21,6 +21,7 @@ class AddAjaxHandlerView(View):
             'absolute_url': product.get_absolute_url(),
             'quantity': cart.cart[str(product.id)]['quantity'],
             'total_it_price': cart.cart[str(product.id)]['quantity'] * product.price,
+            'remove_cart_url': reverse('remove_cart', kwargs={'pk': product.pk}),
         }, status=200)
 
 
