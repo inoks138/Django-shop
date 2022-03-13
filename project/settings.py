@@ -31,6 +31,7 @@ INSTALLED_APPS = [
 
     'shop.apps.ShopConfig',
     'cart.apps.CartConfig',
+    'account.apps.AccountConfig',
 ]
 
 MIDDLEWARE = [
@@ -60,6 +61,8 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTH_USER_MODEL = 'account.Account'
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
