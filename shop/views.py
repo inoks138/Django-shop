@@ -41,7 +41,7 @@ class ProductsByCategory(DetailView):
             brands = self.request.GET['brands'].split(',')
             context['products'] = context['products'].filter(brand__slug__in=brands)
 
-        paginator = Paginator(context['products'], 1)
+        paginator = Paginator(context['products'], 6)
         page_number = self.request.GET.get('page')
         context['page_obj'] = paginator.get_page(page_number)
 
@@ -62,7 +62,7 @@ class ProductsCatalog(ListView):
             brands = self.request.GET['brands'].split(',')
             context['products'] = context['products'].filter(brand__slug__in=brands)
 
-        paginator = Paginator(context['products'], 1)
+        paginator = Paginator(context['products'], 6)
         page_number = self.request.GET.get('page')
         context['page_obj'] = paginator.get_page(page_number)
 

@@ -1,6 +1,14 @@
 html{
     overflow-x: hidden;
 }
+a{
+    color: black;
+    text-decoration: none;
+}
+a:hover{
+    color: black;
+}
+
 .navbar{
     padding-left: 100px;
     background-color: rgba(238, 238, 238, 0.9);
@@ -13,6 +21,7 @@ html{
 .content{
     padding-left: 100px;
     margin: 10px 0px 10px 0px;
+    min-height: 584px;
 }
 footer{
     background-color: #eee;

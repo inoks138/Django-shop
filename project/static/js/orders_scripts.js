@@ -14,18 +14,16 @@ document.addEventListener("DOMContentLoaded", function(event) {
             headers: {
                 "X-Requested-With": "XMLHttpRequest",
             },
-        });
-
-        var item_slug = event.currentTarget.parentNode.id.replace("order-item-", "");
-        var item_total_price = Number(document.getElementById(`item-${item_slug}-total-price`).innerText.replace("грн", "").replace(',','.'));
-        var total_price = Number(total_price_el.innerText.replace("грн", "").replace(',','.'));
-        total_price_el.innerText = `${total_price - item_total_price}грн`
-
-        console.log(item_total_price)
-        console.log(total_price)
-        order_items.removeChild(event.currentTarget.parentNode);
+        })
+        .then(response => response.json())
+        .then(json => removeOrderItemRender(json));
     };
+    function removeOrderItemRender(data){
+        total_price_el.innerText = `${Number(data['total_price'])} грн`;
 
+        order_item = document.getElementById(`order-item-${data['slug']}`)
+        order_items.removeChild(order_item);
+    }
     for (var i = 0; i < remove_order_forms.length; i++) {
         remove_order_forms[i].addEventListener('submit', removeOrderItemEventHandler);
     }

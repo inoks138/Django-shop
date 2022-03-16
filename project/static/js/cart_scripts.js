@@ -37,15 +37,16 @@ document.addEventListener("DOMContentLoaded", function(event) {
             headers: {
                 "X-Requested-With": "XMLHttpRequest",
             },
-        });
-
-        var item_slug = event.currentTarget.parentNode.id.replace("cart-item-", "");
-        var item_total_price = document.getElementById(`item-${item_slug}-totalprice`).innerText.replace("грн", "").replace(',','.');
-        var total_price = total_price_el.innerText.replace("грн", "").replace(',','.');
-        total_price_el.innerText = `${total_price - item_total_price}грн`
-
-        cart_items.removeChild(event.currentTarget.parentNode);
+        })
+        .then(response => response.json())
+        .then(json => removeCartRender(json));
     };
+    function removeCartRender(data){
+        total_price_el.innerText = `${Number(data['total_price'])} грн`;
+
+        cart_item = document.getElementById(`cart-item-${data['slug']}`)
+        cart_items.removeChild(cart_item);
+    }
 
     for (var i = 0; i < remove_cart_forms.length; i++) {
         remove_cart_forms[i].addEventListener('submit', removeCartEventHandler);
@@ -63,9 +64,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
             },
         })
         .then(response => response.json())
-        .then(json => render(json));
+        .then(json => addCartRender(json));
     }
-    function render(data){
+    function addCartRender(data){
         if (data['quantity'] == 1){
             var cart_item = document.createElement("div");
             cart_item.classList.add("cart-item");
@@ -98,18 +99,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
             cart_items.appendChild(cart_item);
 
             document.getElementById(`item-${data['slug']}-delete`).addEventListener('submit', removeCartEventHandler);
-
-            var total_price = Number(total_price_el.innerText.replace("грн", "").replace(',','.'));
-            total_price_el.innerText = `${total_price + Number(data['total_it_price'])}грн`;
         }
         else{
             document.getElementById(`item-${data['slug']}-count`).innerText = data['quantity'];
             document.getElementById(`item-${data['slug']}-totalprice`).innerText = `${data['total_it_price']}грн`;
-
-            var total_price = Number(total_price_el.innerText.replace("грн", "").replace(',','.'));
-            total_price_el.innerText = `${total_price + Number(data['price'])}грн`;
         }
 
+        total_price_el.innerText = `${Number(data['total_price'])} грн`;
     }
 
     for (var i = 0; i < add_cart_forms.length; i++) {
