@@ -11,7 +11,7 @@ register = template.Library()
 def show_cart(context):
     request = context['request']
     cart = Cart(request)
-    return {'cart': cart}
+    return {'cart': cart, 'user': request.user}
 
 
 @register.simple_tag(takes_context=True)

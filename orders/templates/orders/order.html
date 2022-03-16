@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block additional_links %}
+<link href="{% static 'css/order_styles.css' %}" rel="stylesheet">
+<script src="{% static 'js/orders_scripts.js' %}"></script>
+{% endblock %}
+
+{% block title %}
+Оформление заказа :: {{ block.super }}
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="order">
+        <div class="order-caption">Оформление заказа</div>
+        <form action="{% url 'order_create' %}" method="POST" class="order-form">
+            {% csrf_token %}
+            <div id="order-contact">
+                <div class="item-content-header">
+                    <div class="step-num">1</div>
+                    <span class="step">Контактные данные</span>
+                </div>
+                <div class="item-content">
+                    <div class="control-wrap">
+                        <label for="id_first_name">Имя:</label>
+                        {{ form.first_name }}
+                        {% if form.phone.first_name %}
+                        {{ form.phone.first_name }}
+                        {% endif %}
+                    </div>
+                    <div class="control-wrap">
+                        <label for="id_last_name">Фамилия:</label>
+                        {{ form.last_name }}
+                        {% if form.phone.last_name %}
+                        {{ form.phone.last_name }}
+                        {% endif %}
+                    </div>
+                    <div class="control-wrap">
+                        <label for="id_patronymic">Отчество:</label>
+                        {{ form.patronymic }}
+                        {% if form.phone.patronymic %}
+                        {{ form.phone.patronymic }}
+                        {% endif %}
+                    </div>
+                    <div class="control-wrap">
+                        <label for="id_phone">Телефон:</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                        {{ form.phone.errors }}
+                        {% endif %}
+                    </div>
+                    <div class="control-wrap">
+                        <label for="id_city">Город получателя:</label>
+                        {{ form.city }}
+                        {% if form.phone.city %}
+                        {{ form.phone.city }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div id="order-delivery">
+                <div class="item-content-header">
+                    <div class="step-num">2</div>
+                    <span>Адрес доставки</span>
+                </div>
+                <div class="item-content">
+                    <div class="control-wrap">
+                        <label for="id_address">Адрес:</label>
+                        {{ form.address }}
+                        {% if form.phone.address %}
+                        {{ form.phone.address }}
+                        {% endif %}
+                    </div>
+                    <div class="control-wrap">
+                        <label for="id_postal_code">Почтовый индекс:</label>
+                        {{ form.postal_code }}
+                        {% if form.phone.postal_code %}
+                        {{ form.phone.postal_code }}
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="order-payment">
+                <div class="item-content-header">
+                    <div class="step-num">3</div>
+                    <span>Способ оплаты</span>
+                </div>
+                <div class="item-content">
+                    <div class="control-wrap">
+                        <label for="id_paid">Оплачено:</label>
+                        {{ form.paid }}
+                        {% if form.phone.paid %}
+                        {{ form.phone.paid }}
+                        {% endif %}
+                        <p>В разработке ¯\_(ツ)_/¯</p>
+                    </div>
+
+                </div>
+            </div>
+
+            {{ f.errors }}
+
+            <div class="btn-submit-wrap">
+                <button type="submit" class="btn-submit">Подтвердить</button>
+            </div>
+
+        </form>
+    </div>
+    <div class="order-products">
+        <div class="order-products-caption">Товары:</div>
+        <div id="order-items">
+            {% for item in cart %}
+            <div class="order-item" id="order-item-{{ item.product.slug }}">
+                <div class="order-item-img-wrap">
+                    <a href="{{ item.product.get_absolute_url }}">
+                        <img src="{{ item.product.photo.url }}" width=100% height=100% alt="{{ item.product.title }}">
+                    </a>
+                </div>
+                <div class="order-item-description">
+                    <a class="product-ref" href="{{ item.product.get_absolute_url }}">
+                        <div class="order-item-brand">{{ item.product.brand }}</div>
+                        <div class="order-item-title">{{ item.product }}</div>
+                    </a>
+                    <div class="order-price-count">
+                        <div class="order-item-price">Цена: {{ item.product.price }} грн</div>
+                        <div class="order-item-count">{{ item.quantity }} шт.</div>
+                    </div>
+                </div>
+                <div class="order-item-total-price" id="item-{{ item.product.slug }}-total-price">{{ item.total_price }}
+                    грн
+                </div>
+                <form action="{% url 'remove_cart' item.product.pk %}" method="get" class="order-item-delete-form"
+                      id="item-{{ item.product.slug }}-delete">
+                    <button type="submit" class="cart-item-delete">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
+                            <path fill-rule="evenodd"
+                                  d="M38.6,38.6 L38.6,59.4 C38.6,60.8359403 37.4359403,62 36,62 C34.5640597,62 33.4,60.8359403 33.4,59.4 L33.4,38.6 L12.6,38.6 C11.1640597,38.6 10,37.4359403 10,36 C10,34.5640597 11.1640597,33.4 12.6,33.4 L33.4,33.4 L33.4,12.6 C33.4,11.1640597 34.5640597,10 36,10 C37.4359403,10 38.6,11.1640597 38.6,12.6 L38.6,33.4 L59.4,33.4 C60.8359403,33.4 62,34.5640597 62,36 C62,37.4359403 60.8359403,38.6 59.4,38.6 L38.6,38.6 Z"
+                                  transform="rotate(45 36 36)"></path>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="order-total-price">
+            <span>Всего к оплате:</span>
+            <span class="bold" id="total-price">{{ cart.get_total_price }} грн</span>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

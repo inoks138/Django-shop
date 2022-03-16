@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Спасибо за покупку! :: {{ block.super }}
+{% endblock %}
+
+
+{% block content %}
+<h1>Вы успешно совершили покупку!</h1>
+<a href="{% url 'home' %}">На главную</a>
+{% endblock %}
