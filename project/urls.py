@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth import logout
 from django.urls import path, include
 
 urlpatterns = [
@@ -23,6 +24,7 @@ urlpatterns = [
     path('cart/', include('cart.urls')),
     path('account/', include('account.urls')),
     path('order/', include('orders.urls')),
+    path('', include('social_django.urls', namespace='social')),
     path('', include('shop.urls')),
 ]
 
