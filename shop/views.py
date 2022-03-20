@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
@@ -58,9 +59,16 @@ class ProductsCatalog(ListView):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.filter(level__in=[0, 1])
         context['brands'] = Brand.objects.all()
+
         if 'brands' in self.request.GET:
             brands = self.request.GET['brands'].split(',')
+            context['choosen_brands'] = Brand.objects.filter(slug__in=brands)
             context['products'] = context['products'].filter(brand__slug__in=brands)
+
+        if 'search' in self.request.GET:
+            search = self.request.GET['search']
+            context['products'] = context['products'].filter(
+                Q(title__iregex=search) | Q(category__title__iregex=search) | Q(brand__title__iregex=search))
 
         paginator = Paginator(context['products'], 6)
         page_number = self.request.GET.get('page')

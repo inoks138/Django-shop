@@ -115,18 +115,43 @@
     flex-flow: row wrap;
     padding-left: 20px;
     margin-bottom: 15px;
+    font-size: 14px;
+}
+.filter{
+    margin: 4px 6px;
 }
 .dropdown{
     position: relative;
 }
-.dropdown__head{
+.dropdown__head, .set_filter{
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
     border: 1px solid black;
     border-radius: 7.5px;
-    padding: 5px 10px;
     cursor: pointer;
 }
-.dropdown__head:hover{
+.dropdown__head:hover, .set_filter:hover{
     box-shadow: 0 6px 12px rgb(0 0 0 / 12%);
+}
+.dropdown__head.active, .set_filter.active{
+    border-color: #ffb914;
+}
+.filter-caption{
+    padding: 5px 10px;
+}
+.filter-remove{
+    display: flex;
+    justify-content: center;
+    width: 32.5px;
+    height: 32px;
+    border-radius: 0px 7px 7px 0px;
+    background-color: #ffb914;
+}
+.filter-remove svg{
+    align-self: center;
+    width: 17px;
+    height: 17px;
 }
 .dropdown__body{
     display: none;
@@ -182,27 +207,27 @@
 .filter-button-submit:hover{
     color: #fff780;
 }
-.dropdown__search{
+.dropdown__search_wrap{
     padding: 0px 20px;
     margin: 10px 0px;
 }
-.filter-search-wrap{
+.dropdown__search{
     display: flex;
     flex-flow: row nowrap;
     background-color: rgba(238, 238, 238, 0.9);
     border-radius: 8.5px;
 }
-.button-search-confirm, .button-search-clear{
+.dropdown__search_btn_confirm, .dropdown__search_btn_clear{
     display: flex;
     width: 30px;
     height: 30px;
     padding: 5.5px;
     cursor: pointer;
 }
-.button-search-confirm svg, .button-search-clear svg{
+.dropdown__search_btn_confirm svg, .dropdown__search_btn_clear svg{
     align-self: center;
 }
-.filter-search{
+.dropdown__search_input{
     flex: 1 1 auto;
     font-size: 14px;
     background-color: inherit;

@@ -5,9 +5,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
         return function(){
             dropdown.classList.toggle("dropdown__show");
 
-            if(dropdown.classList.contains("dropdown__show"))
+            if(dropdown.classList.contains("dropdown__show")){
                 dropdown_head.style.borderColor = "white";
-            else dropdown_head.style.borderColor = "black";
+            }
+            else if (dropdown_head.classList.contains("active")){
+                dropdown_head.style.borderColor = "#ffb914";
+            }
+            else{
+                dropdown_head.style.borderColor = "black";
+            }
         }
     }
     function dropdownCloseEventHandler(dropdown, dropdown_head){
@@ -15,81 +21,117 @@ document.addEventListener("DOMContentLoaded", function(event) {
             const withinBoundaries = e.composedPath().includes(dropdown);
 
             if ( ! withinBoundaries ) {
-                dropdown_head.style.borderColor = "black";
+                if(dropdown_head.classList.contains("active")){
+                    dropdown_head.style.borderColor = "#ffb914";
+                }
+                else{
+                    dropdown_head.style.borderColor = "black";
+                }
+
                 dropdown.classList.remove('dropdown__show');
             }
         })
     }
-
     for (var i = 0; i < dropdowns.length; i++) {
         var dropdown = dropdowns[i]
         var dropdown_head = dropdown.firstElementChild
+        var filter_caption = dropdown_head.firstElementChild
 
-        dropdown_head.onclick = dropdownToggleEventHandler(dropdown, dropdown_head)
+        filter_caption.onclick = dropdownToggleEventHandler(dropdown, dropdown_head)
 
         dropdownCloseEventHandler(dropdown, dropdown_head)
     }
 
+    function isEmpty(obj){
+        return Object.keys(obj).length === 0;
+    }
+    url = location.toString()
+    function getUrl(params){
+        if (isEmpty(params)){
+            return url.split('?')[0]
+        }
 
-    var get_params = window.location.search.replace('?','').split('&').reduce(function(p,e){
+        entries = Object.entries(params)
+        params_str = '?'
+
+        for (i = 0; i < entries.length; i++) {
+            param = entries[i][0] + "=" + entries[i][1];
+            params_str += param
+            if(i != entries.length - 1)
+                params_str += "&"
+        }
+
+        return url.split('?')[0] + params_str
+    }
+    var params = window.location.search.replace('?','').split('&').reduce(function(p,e){
                 var a = e.split('=');
                 p[ decodeURIComponent(a[0])] = decodeURIComponent(a[1]);
                 if (a != "") {return p;}
             }, {});
-
+    if(! params) params = {}
 
     brand_form = document.forms.filter_brand
     checkboxes = brand_form.elements
 
-    if (get_params && 'brands' in get_params){
-        var brands = get_params['brands'].split(',')
-        for (var i = 0; i < checkboxes.length; i++){
-            if(brands.indexOf(checkboxes[i].id) != -1)
-                checkboxes[i].checked = true;
-        }
-    }
-
-    var search_filter_wraps = document.getElementsByClassName("filter-search-wrap");
-    function searchFilterEventHandler(search_filter, dropdown_options){
-        return function(){
-            var regex = new RegExp(search_filter.value, "i");
-            var brand_filters = dropdown_options.children;
-
-            for (var i = 0; i < brand_filters.length; i++){
-                brand_filter = brand_filters[i];
-                console.log(regex.test(brand_filter.lastElementChild.innerText))
-                if (!regex.test(brand_filter.lastElementChild.innerText))
-                    brand_filter.classList.add("hidden");
-                else{
-                    if (brand_filter.classList.contains("hidden"))
-                         brand_filter.classList.remove("hidden");
-                }
+    if (! isEmpty(params)){
+        if ('brands' in params){
+            var brands = params['brands'].split(',')
+            for (var i = 0; i < checkboxes.length; i++){
+                if(brands.indexOf(checkboxes[i].id) != -1)
+                    checkboxes[i].checked = true;
+            }
+            document.getElementById('brands-remove').onclick = function(){
+                delete params['brands']
+                location.assign(getUrl(params))
             }
         }
-    }
-    function testFunc(search_filter, dropdown_options){
-        return function(){
-            search_filter.value = "";
-
-            var brand_filters = dropdown_options.children;
-
-            for (var i = 0; i < brand_filters.length; i++){
-                if (brand_filters[i].classList.contains("hidden"))
-                    brand_filters[i].classList.remove("hidden");
+        if('search' in params){
+            document.getElementById('search-remove').onclick = function(){
+                delete params['search']
+                location.assign(getUrl(params))
             }
         }
     }
 
-    for (var i = 0; i < search_filter_wraps.length; i++){
-        var button_search_confirm = search_filter_wraps[i].children[0];
-        var search_filter = search_filter_wraps[i].children[1];
-        var button_search_clear = search_filter_wraps[i].children[2]
 
-        var dropdown_options = search_filter_wraps[i].parentElement.nextElementSibling
 
-        button_search_confirm.onclick = searchFilterEventHandler(search_filter, dropdown_options)
-        search_filter.oninput = searchFilterEventHandler(search_filter, dropdown_options)
-        button_search_clear.onclick = testFunc(search_filter, dropdown_options);
+    var dropdowns_search = document.getElementsByClassName("dropdown__search");
+    function dropdownSearchFilterEventHandler(dropdown_search, dropdown_options){
+        return function(){
+            var regex = new RegExp(dropdown_search.value, "i");
+            var checkbox_filters = dropdown_options.children;
+
+            for (var i = 0; i < checkbox_filters.length; i++){
+                checkbox_filter = checkbox_filters[i];
+                if (!regex.test(checkbox_filter.lastElementChild.innerText))
+                    checkbox_filter.classList.add("hidden");
+                else if (checkbox_filter.classList.contains("hidden"))
+                    checkbox_filter.classList.remove("hidden");
+            }
+        }
+    }
+    function dropdownSearchClearFilterEventHandler(dropdown_search, dropdown_options){
+        return function(){
+            dropdown_search.value = "";
+
+            var checkbox_filters = dropdown_options.children;
+
+            for (var i = 0; i < checkbox_filters.length; i++){
+                if (checkbox_filters[i].classList.contains("hidden"))
+                    checkbox_filters[i].classList.remove("hidden");
+            }
+        }
+    }
+    for (var i = 0; i < dropdowns_search.length; i++){
+        var dropdown_search_btn_confirm = dropdowns_search[i].children[0];
+        var dropdown__search_input = dropdowns_search[i].children[1];
+        var dropdown_search_btn_clear = dropdowns_search[i].children[2]
+
+        var dropdown_options = dropdowns_search[i].parentElement.nextElementSibling
+
+        dropdown_search_btn_confirm.onclick = dropdownSearchFilterEventHandler(dropdown__search_input, dropdown_options)
+        dropdown__search_input.oninput = dropdownSearchFilterEventHandler(dropdown__search_input, dropdown_options)
+        dropdown_search_btn_clear.onclick = dropdownSearchClearFilterEventHandler(dropdown__search_input, dropdown_options);
     }
 
     brand_form.addEventListener("submit", function(event){
@@ -102,26 +144,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 brands.push(checkboxes[i].id)
             }
         }
-
+        console.log(brands)
+        console.log(params)
         if(brands.length != 0){
-            var url = location.toString();
+            params['brands'] = brands.join(',');
 
-            if(get_params){
-                get_params['brands'] = brands.join(',');
-                entries = Object.entries(get_params)
-                params_str = '?'
-
-                for (i = 0; i < entries.length; i++) {
-                    param = entries[i][0] + "=" + entries[i][1];
-                    params_str += param
-                    if(i != entries.length - 1)
-                        params_str += "&"
-                }
-                location.assign(url.split('?')[0] + params_str)
-            }
-            else{
-                location.assign(url + "?brands=" + brands.join(','))
-            }
+            location.assign(getUrl(params))
         }
-    })
+    });
 })
