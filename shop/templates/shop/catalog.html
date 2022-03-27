@@ -149,7 +149,8 @@
                         <div class="product-description">
                             <div class="product-top">
                                 <div class="product-price">{{ item.price }} грн</div>
-                                <form action="{% url 'add_cart' item.id %}" method="get" class="add_cart_form">
+                                <form action="{% url 'add_cart' item.id %}" method="post" class="add_cart_form">
+                                    {% csrf_token %}
                                     <button type="submit" class="product-btn_cart">
                                         <span>Купить</span>
                                     </button>

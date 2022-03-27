@@ -21,6 +21,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
         else
             closeCart();
     };
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 
 
     var cart_items = document.getElementById('cart-items');
@@ -30,12 +45,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
     function removeCartEventHandler(event){
         event.preventDefault();
 
+        const csrftoken = getCookie('csrftoken');
+
         url = this.action;
-        console.log(url)
         fetch(url, {
-            method: "GET",
+            method: "POST",
             headers: {
-                "X-Requested-With": "XMLHttpRequest",
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken,
             },
         })
         .then(response => response.json())
@@ -56,11 +73,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
     function addCartEventHandler(event) {
         event.preventDefault();
 
+        const csrftoken = getCookie('csrftoken');
+
         url = this.action;
         fetch(url, {
-            method: "GET",
+            method: "POST",
             headers: {
-                "X-Requested-With": "XMLHttpRequest",
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken,
             },
         })
         .then(response => response.json())
@@ -89,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             <div id="item-${data['slug']}-totalprice" class="cart-item-totalprice">
                 ${data['total_it_price']}грн
             </div>
-            <form action="${data['remove_cart_url']}" method="get" class="cart-item-delete-form"
+            <form action="${data['remove_cart_url']}" method="post" class="cart-item-delete-form"
                   id="item-${data['slug']}-delete">
                 <button type="submit" class="cart-item-delete">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72"><path fill-rule="evenodd" d="M38.6,38.6 L38.6,59.4 C38.6,60.8359403 37.4359403,62 36,62 C34.5640597,62 33.4,60.8359403 33.4,59.4 L33.4,38.6 L12.6,38.6 C11.1640597,38.6 10,37.4359403 10,36 C10,34.5640597 11.1640597,33.4 12.6,33.4 L33.4,33.4 L33.4,12.6 C33.4,11.1640597 34.5640597,10 36,10 C37.4359403,10 38.6,11.1640597 38.6,12.6 L38.6,33.4 L59.4,33.4 C60.8359403,33.4 62,34.5640597 62,36 C62,37.4359403 60.8359403,38.6 59.4,38.6 L38.6,38.6 Z" transform="rotate(45 36 36)"></path></svg>

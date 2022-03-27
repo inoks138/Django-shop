@@ -134,8 +134,9 @@
                 <div class="order-item-total-price" id="item-{{ item.product.slug }}-total-price">{{ item.total_price }}
                     грн
                 </div>
-                <form action="{% url 'remove_cart' item.product.pk %}" method="get" class="order-item-delete-form"
+                <form action="{% url 'remove_cart' item.product.pk %}" method="post" class="order-item-delete-form"
                       id="item-{{ item.product.slug }}-delete">
+                    {% csrf_token %}
                     <button type="submit" class="cart-item-delete">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
                             <path fill-rule="evenodd"

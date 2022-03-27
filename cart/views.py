@@ -6,8 +6,8 @@ from .cart import Cart
 from django.http import JsonResponse
 
 
-class AddAjaxHandlerView(View):
-    def get(self, request, pk):
+class AddCart(View):
+    def post(self, request, pk):
         cart = Cart(request)
         product = get_object_or_404(Product, id=pk)
         cart.add(product)
@@ -26,8 +26,8 @@ class AddAjaxHandlerView(View):
         }, status=200)
 
 
-class RemoveAjaxHandlerView(View):
-    def get(self, request, pk):
+class RemoveCart(View):
+    def post(self, request, pk):
         cart = Cart(request)
         product = get_object_or_404(Product, id=pk)
         cart.remove(product)
