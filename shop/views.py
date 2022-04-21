@@ -38,8 +38,10 @@ class ProductsByCategory(DetailView):
         context['brands'] = Brand.objects.all()
         context['ancestors_tree'] = context['category'].get_ancestors(include_self=True)
         context['products'] = context['category'].get_products()
+
         if 'brands' in self.request.GET:
             brands = self.request.GET['brands'].split(',')
+            context['choosen_brands'] = Brand.objects.filter(slug__in=brands)
             context['products'] = context['products'].filter(brand__slug__in=brands)
 
         paginator = Paginator(context['products'], 6)
