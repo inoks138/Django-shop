@@ -1,8 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load mptt_tags %}
+{% load comments_tags %}
+{% load query_param_tags %}
 
 {% block additional_links %}
 <link href="{% static 'css/product_styles.css' %}" rel="stylesheet">
+<link href="{% static 'css/comments_styles.css' %}" rel="stylesheet">
+<link href="{% static 'css/pagination.css' %}" rel="stylesheet">
+<script src="{% static 'js/product_scripts.js' %}"></script>
+<script src="{% static 'js/comments_scripts.js' %}"></script>
+
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
 {% endblock %}
 
 {% block title %}
@@ -37,44 +48,127 @@
 
 <div class="bottom-info col-md-9 mb-4 mt-4">
     <div class="tabs-nav row">
-        <div class="tabs-nav-item active">
-            <span>Описание товара</span>
+        {% get_param 'page' as page_param %}
+        <div class="tabs-nav-item{% if not page_param %} active{% endif %}" id="description-tabs-nav">
+            Описание товара
         </div>
-        <div class="tabs-nav-item">
-            <span>Доставка и возврат</span>
+        <div class="tabs-nav-item" id="delivery-tabs-nav">
+            Доставка и возврат
         </div>
-    </div>
-
-    <div class="description-tab row tab">
-        <div class="col-md-5">
-
-            <div class="prop">
-                <div class="prop-line">
-                    <div class="prop-name">
-                        <span>Бренд</span>
-                    </div>
-                    <div class="prop-value">
-                        <span>{{ product.brand.title }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="prop">
-                <div class="prop-line">
-                    <div class="prop-name">
-                        <span>Код товара</span>
-                    </div>
-                    <div class="prop-value">
-                        <span>{{ product.pk }}</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <div class="col-md-7">
-            <p class="description">{{ product.description }}</p>
+        <div class="tabs-nav-item{% if page_param %} active{% endif %}" id="comments-tabs-nav">
+            Отзывы
         </div>
     </div>
+    <div class="tabs-body">
+        {% get_param 'page' as page_param %}
+
+        <div class="description-tab tab{% if not page_param %} active{% endif %}">
+            <div class="row">
+                <div class="col-md-5">
+
+                    <div class="prop">
+                        <div class="prop-line">
+                            <div class="prop-name">
+                                <span>Бренд</span>
+                            </div>
+                            <div class="prop-value">
+                                <span>{{ product.brand.title }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="prop">
+                        <div class="prop-line">
+                            <div class="prop-name">
+                                <span>Код товара</span>
+                            </div>
+                            <div class="prop-value">
+                                <span>{{ product.pk }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-7">
+                    <p class="description">{{ product.description }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="delivery-tab tab">
+            Инфа про доставку и возврат
+        </div>
+
+        <div class="comments-tab tab{% if page_param %} active{% endif %}">
+            <div class="add__comment__form__wrap">
+                <form action="{% url 'add_comment' %}" method="post" class="add-comment-form">
+                    {% csrf_token %}
+                    {{ add_form.content }}
+                    <input type="submit" value="Отправить">
+                </form>
+            </div>
+
+            <div class="comments">
+                {% for comment in page_obj %}
+                {% recursetree comment %}
+                <div class="comment" id="comment-{{ node.pk }}">
+                    <div class="comment__body">
+                        <div class="comment__head">
+                            <div class="comment__user">{{ node.user.username }}</div>
+                            <div class="comment__date">{% calc_date node.created_at %}</div>
+                        </div>
+                        <div class="comment__content">{{ node.content }}</div>
+                        <div class="comment__controls">
+                            <div class="comment__reply">ответить</div>
+                            <div class="comment__rating__wrap">
+                                <div class="comment__like{% if user in node.comment_like.users.all %} voted{% endif %}"></div>
+                                <div class="comment__rating">{{ node.count_rating }}</div>
+                                <div class="comment__dislike{% if user in node.comment_dislike.users.all %} voted{% endif %}"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if not node.is_leaf_node %}
+                    <div class="comment__children">
+                        {{ children }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endrecursetree %}
+                {% endfor %}
+            </div>
+
+            {% if page_obj.has_other_pages %}
+            <div class="pagination">
+                <div class="page-nav-links">
+                    {% if page_obj.has_previous %}
+                    <a class="page-numbers" href="?{% param_replace page=page_obj.previous_page_number %}"><i
+                            class="fa">
+                        < </i></a>
+                    {% endif %}
+
+                    {% for p in page_obj.paginator.page_range %}
+
+                    {% if page_obj.number == p %}
+                    <span class="page-numbers page-current">{{ p }}</span>
+                    {% elif p > page_obj.number|add:-4 and p < page_obj.number|add:4 %}
+                    <a class="page-numbers" href="?{% param_replace page=p %}">{{ p }}</a>
+                    {% endif %}
+
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <a class="page-numbers" href="?{% param_replace page=page_obj.next_page_number %}"><i class="fa">
+                        > </i></a>
+                    {% endif %}
+
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+
 
 </div>
 

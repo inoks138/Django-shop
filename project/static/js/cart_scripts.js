@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         .then(json => removeCartRender(json));
     };
     function removeCartRender(data){
+        toastr.info(data['message']);
         total_price_el.innerText = `${Number(data['total_price'])} грн`;
 
         cart_item = document.getElementById(`cart-item-${data['slug']}`)
@@ -87,6 +88,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
         .then(json => addCartRender(json));
     }
     function addCartRender(data){
+        toastr.success(data['message']);
+
         if (data['quantity'] == 1){
             var cart_item = document.createElement("div");
             cart_item.classList.add("cart-item");

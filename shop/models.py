@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from mptt.models import MPTTModel, TreeForeignKey
@@ -82,3 +83,70 @@ class Product(models.Model):
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
         ordering = ['-created_at']
+
+
+class Comment(MPTTModel):
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    content = models.TextField(verbose_name="Содержимое")
+    created_at = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True)
+    is_public = models.BooleanField(verbose_name="Публичный", default=True)
+    is_removed = models.BooleanField(verbose_name="Удален", default=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.content[:12]}{'...' if len(self.content) > 12 else ''}"
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Коментарии'
+
+    class MPTTMeta:
+        order_insertion_by = ('-created_at', )
+
+    def count_rating(self):
+        """
+        Returns number of likes minus dislikes
+        """
+        likes = 0
+        dislikes = 0
+
+        try:
+            likes = self.comment_like.users.count()
+        except Comment.comment_like.RelatedObjectDoesNotExist as identifier:
+            CommentLike.objects.create(comment=self)
+
+        try:
+            dislikes = self.comment_dislike.users.count()
+        except Comment.comment_dislike.RelatedObjectDoesNotExist as identifier:
+            CommentDislike.objects.create(comment=self)
+
+        return likes - dislikes
+
+
+class CommentLike(models.Model):
+    comment = models.OneToOneField(Comment, on_delete=models.CASCADE, related_name='comment_like')
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Like for comment {self.comment.id}: {str(self.comment)}"
+
+    class Meta:
+        verbose_name = 'Лайки к комментарию'
+        verbose_name_plural = 'Лайки к комментариям'
+
+
+class CommentDislike(models.Model):
+    comment = models.OneToOneField(Comment, on_delete=models.CASCADE, related_name='comment_dislike')
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Dislike for comment {self.comment.id}: {str(self.comment)}"
+
+    class Meta:
+        verbose_name = 'Дизлайки к комментарию'
+        verbose_name_plural = 'Дизлайки к комментариям'

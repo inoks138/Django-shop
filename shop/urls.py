@@ -8,5 +8,8 @@ urlpatterns = [
     path('brand/<str:slug>', get_brand, name="brand"),
     path('brands', get_brands, name='brands'),
     path('catalog/<str:slug>', ProductsByCategory.as_view(), name="category"),
-    path('catalog', ProductsCatalog.as_view(), name="catalog")
+    path('catalog', ProductsCatalog.as_view(), name="catalog"),
+
+    path('comments/add_comment', AddComment.as_view(), name="add_comment"),
+    path('comments/toggle_comment_vote', ToggleCommentVote.as_view(), name="toggle_comment_vote"),
 ]

@@ -23,6 +23,7 @@ class AddCart(View):
             'total_it_price': cart.cart[str(product.id)]['quantity'] * product.price,
             'total_price': cart.get_total_price(),
             'remove_cart_url': reverse('remove_cart', kwargs={'pk': product.pk}),
+            'message': 'Товар успешно добавлен в корзину',
         }, status=200)
 
 
@@ -34,4 +35,5 @@ class RemoveCart(View):
         return JsonResponse({
             'total_price': cart.get_total_price(),
             'slug': product.slug,
+            'message': 'Товар убран из корзины',
         }, status=200)

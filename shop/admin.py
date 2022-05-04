@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 from mptt.admin import DraggableMPTTAdmin
 
+from shop.models import Comment
 from .models import Category, Brand, Product
 
 admin.site.register(
@@ -41,6 +42,18 @@ class ProductAdmin(admin.ModelAdmin):
 
     get_photo.short_description = 'Миниатюра'
 
+
+admin.site.register(
+    Comment,
+    DraggableMPTTAdmin,
+    list_display=(
+        'tree_actions',
+        'indented_title',
+    ),
+    list_display_links=(
+        'indented_title',
+    ),
+)
 
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(Product, ProductAdmin)

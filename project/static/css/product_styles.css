@@ -33,6 +33,7 @@
 
 .tabs-nav{
     position: relative;
+    cursor: pointer;
 }
 .tabs-nav-item{
     font-size: 17px;
@@ -60,6 +61,10 @@
 }
 .tab{
     margin-top: 10px;
+    display: none;
+}
+.tab.active{
+    display: block;
 }
 .prop-line{
     display: flex;

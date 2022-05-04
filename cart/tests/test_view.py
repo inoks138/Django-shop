@@ -7,6 +7,7 @@ from django.urls import reverse
 from slugify import slugify
 
 from account.models import Account
+from cart.templatetags.cart_tags import cart_add_product
 from shop.models import Product, Category, Brand
 
 
@@ -55,6 +56,7 @@ class CartTest(TestCase):
             'total_it_price': '600.00',
             'total_price': '1200.00',
             'remove_cart_url': '/cart/remove/1',
+            'message': 'Товар успешно добавлен в корзину',
         }
         self.assertEqual(data, expected_data)
 
@@ -67,5 +69,6 @@ class CartTest(TestCase):
         expected_data = {
             'slug': self.product2.slug,
             'total_price': '400.00',
+            'message': 'Товар убран из корзины',
         }
         self.assertEqual(data, expected_data)
