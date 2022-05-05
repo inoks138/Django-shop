@@ -2,10 +2,11 @@ import json
 
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponse, JsonResponse, QueryDict
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.views.generic import DetailView, ListView
+from mptt.querysets import TreeQuerySet
 
 from shop.forms import AddCommentForm
 from shop.models import Comment, CommentDislike, CommentLike
@@ -28,12 +29,34 @@ class ViewProduct(DetailView):
         context['cart_product_form'] = CartAddProductForm()
         context['add_form'] = AddCommentForm()
 
-        comments = Comment.objects.raw(
-            f"""SELECT id, rating FROM shop_comment
+        if self.request.user.is_authenticated:
+            query_for_liked_comments = f"""
+                SELECT comment_id as id
+                FROM shop_commentlike
+                JOIN
+                (SELECT commentlike_id
+                FROM shop_commentlike_users
+                WHERE account_id = {self.request.user.id})
+                ON(id=commentlike_id)"""
+
+            query_for_disliked_comments = f"""
+                SELECT comment_id as id
+                FROM shop_commentdislike
+                JOIN
+                (SELECT commentdislike_id
+                FROM shop_commentdislike_users
+                WHERE account_id = {self.request.user.id})
+                ON(id=commentdislike_id)"""
+
+            context['liked'] = [comment.id for comment in Comment.objects.raw(query_for_liked_comments)]
+            context['disliked'] = [comment.id for comment in Comment.objects.raw(query_for_disliked_comments)]
+
+        query_for_root = f"""
+            SELECT id, lft, rght, rating FROM shop_comment
             JOIN
             (SELECT id, likes - dislikes as rating
             FROM
-    
+
             (SELECT id, IFNULL(likes, 0) as likes
             FROM shop_comment
             LEFT JOIN
@@ -42,9 +65,9 @@ class ViewProduct(DetailView):
             JOIN shop_commentlike_users ON shop_commentlike.id = shop_commentlike_users.commentlike_id
             GROUP BY shop_comment.id)
             USING(id))
-    
-            LEFT JOIN 
-    
+
+            LEFT JOIN
+
             (SELECT id, IFNULL(dislikes, 0) as dislikes
             FROM shop_comment
             LEFT JOIN
@@ -53,24 +76,62 @@ class ViewProduct(DetailView):
             JOIN shop_commentdislike_users ON shop_commentdislike.id = shop_commentdislike_users.commentdislike_id
             GROUP BY shop_comment.id)
             USING(id))
-    
+
             USING(id))
-    
+
             USING(id)
             WHERE level = 0 and product_id = {context['product'].id}
-            ORDER BY rating DESC""")
+            ORDER BY tree_id ASC, lft ASC, id ASC"""
 
-        # comments = context['product'].comments.filter(level=0)
-        nodes = [node.get_descendants(include_self=True) for node in comments]
+        query_for_all = f"""
+                    SELECT id, rating FROM shop_comment
+                    JOIN
+                    (SELECT id, likes - dislikes as rating
+                    FROM
+
+                    (SELECT id, IFNULL(likes, 0) as likes
+                    FROM shop_comment
+                    LEFT JOIN
+                    (SELECT shop_comment.id as id, COUNT() as likes FROM shop_comment
+                    JOIN shop_commentlike ON shop_commentlike.comment_id = shop_comment.id
+                    JOIN shop_commentlike_users ON shop_commentlike.id = shop_commentlike_users.commentlike_id
+                    GROUP BY shop_comment.id)
+                    USING(id))
+
+                    LEFT JOIN
+
+                    (SELECT id, IFNULL(dislikes, 0) as dislikes
+                    FROM shop_comment
+                    LEFT JOIN
+                    (SELECT shop_comment.id as id, COUNT() as dislikes FROM shop_comment
+                    JOIN shop_commentdislike ON shop_commentdislike.comment_id = shop_comment.id
+                    JOIN shop_commentdislike_users ON shop_commentdislike.id = shop_commentdislike_users.commentdislike_id
+                    GROUP BY shop_comment.id)
+                    USING(id))
+
+                    USING(id))
+
+                    USING(id)
+                    WHERE product_id = {context['product'].id}
+                    ORDER BY tree_id ASC, lft ASC, id ASC"""
+
+        all_comments = Comment.objects.raw(query_for_all)
+        root_comments = Comment.objects.raw(query_for_root)
+
+        nodes = [node.get_descendants(include_self=True).select_related('user').select_related('comment_like')
+                     .select_related('comment_dislike') for node in root_comments]
+
+        index = 0
+        for comment_tree in nodes:
+            for comment in comment_tree:
+                comment.rating = all_comments[index].rating
+                index += 1
+
         paginator = Paginator(nodes, 6)
         page_number = self.request.GET.get('page')
         context['page_obj'] = paginator.get_page(page_number)
 
         return context
-
-
-def get_brand(request, slug):
-    return HttpResponse(f"<h3>Бренд - {slug}</h3>")
 
 
 class ProductsByCategory(DetailView):
@@ -99,10 +160,12 @@ class ProductsByCategory(DetailView):
 
 
 class ProductsCatalog(ListView):
-    model = Product
     template_name = 'shop/catalog.html'
     context_object_name = 'products'
-    allow_empty = False
+
+    def get_queryset(self):
+        products = Product.objects.select_related('brand').all()
+        return products
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

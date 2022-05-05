@@ -12,7 +12,7 @@
     Каталог
     <span class="symbol-more">></span>
 </a>
-{% for ancestor in category.get_ancestors %}
+{% for ancestor in ancestors_tree %}
 <a class="bc-item" href="{{ ancestor.get_absolute_url }}">
     {{ ancestor.title }}
     <span class="symbol-more">></span>

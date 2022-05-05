@@ -1,6 +1,7 @@
 import tempfile
 
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
 from django.test import TestCase
 from django.urls import reverse
 from slugify import slugify
@@ -10,7 +11,7 @@ from orders.models import Order, OrderItem
 from shop.models import Brand, Category, Product
 
 
-class OrderModelTest(TestCase):
+class OrderViewTest(TestCase):
 
     def setUp(self):
         brand = Brand.objects.create(title='Крутой бренд', slug=slugify('Крутой бренд'))
@@ -24,7 +25,8 @@ class OrderModelTest(TestCase):
 
     def test_order_create_if_not_logged(self):
         response = self.client.get(reverse('order_create'))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/account/login?next=/order/create')
 
     def test_order_create_access(self):
         self.client.login(username="user", password="12345")

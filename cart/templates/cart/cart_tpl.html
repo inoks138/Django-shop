@@ -5,7 +5,9 @@
             <img src="{% static 'img/close-circle.png' %}" width=100% height=100% alt="close">
         </div>
     </div>
-    <div class="cart-table">
+
+    <div class="cart-content{% if not cart.cart %} disabled{% endif %}">
+        <div class="cart-table">
         <div class="cart-table-caption">
             <div class="cart-table-caption-price">Цена</div>
             <div class="cart-table-caption-count">Количество</div>
@@ -47,7 +49,7 @@
 
         </div>
     </div>
-    <div class="cart-footer">
+        <div class="cart-footer">
         <div id="cart-continue-shopping">
             <div id="continue-shopping">Продолжить покупки</div>
         </div>
@@ -66,5 +68,12 @@
             </form>
             {% endif %}
         </div>
+    </div>
+    </div>
+
+    <div class="cart-empty{% if cart.cart %} disabled{% endif %}">
+        <div class="cart-empty-img"><img src="{% static 'img/cart.png' %}" alt="cart" width="100%" height="100%"></div>
+        <div class="cart-empty-sign">Ваша корзина пуста</div>
+        <div id="cart-empty-continue">Продолжить покупки</div>
     </div>
 </div>

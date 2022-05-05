@@ -12,6 +12,10 @@
 .bc-item:hover{
     color: #f7a400;
 }
+.product-info{
+    margin-top: 40px;
+    margin-left: 15px;
+}
 .brand{
     margin-top: 5px;
     font-size: 20px;
@@ -28,7 +32,23 @@
 .price{
     font-size: 22px;
 }
-
+.product-btn_cart{
+    padding: 8px 35px;
+    margin: 25px 10px;
+    background-color: #f7a400;
+    border-radius: 7.5px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px #999;
+}
+.product-btn_cart:hover{
+    background-color: #ffca00;
+}
+.product-btn_cart:active {
+    background-color: #ffca00;
+    box-shadow: 0 1px #666;
+    transform: translateY(1px);
+}
 
 
 .tabs-nav{

@@ -1,15 +1,5 @@
-{% extends 'base.html' %}
+{% extends 'orders/base_order.html' %}
 {% load static %}
-
-{% block additional_links %}
-<link href="{% static 'css/order_styles.css' %}" rel="stylesheet">
-<script src="{% static 'js/orders_scripts.js' %}"></script>
-{% endblock %}
-
-{% block title %}
-Оформление заказа :: {{ block.super }}
-{% endblock %}
-
 
 {% block content %}
 <div class="row">
@@ -137,7 +127,7 @@
                 <form action="{% url 'remove_cart' item.product.pk %}" method="post" class="order-item-delete-form"
                       id="item-{{ item.product.slug }}-delete">
                     {% csrf_token %}
-                    <button type="submit" class="cart-item-delete">
+                    <button type="submit" class="order-item-delete">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
                             <path fill-rule="evenodd"
                                   d="M38.6,38.6 L38.6,59.4 C38.6,60.8359403 37.4359403,62 36,62 C34.5640597,62 33.4,60.8359403 33.4,59.4 L33.4,38.6 L12.6,38.6 C11.1640597,38.6 10,37.4359403 10,36 C10,34.5640597 11.1640597,33.4 12.6,33.4 L33.4,33.4 L33.4,12.6 C33.4,11.1640597 34.5640597,10 36,10 C37.4359403,10 38.6,11.1640597 38.6,12.6 L38.6,33.4 L59.4,33.4 C60.8359403,33.4 62,34.5640597 62,36 C62,37.4359403 60.8359403,38.6 59.4,38.6 L38.6,38.6 Z"
@@ -154,5 +144,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}

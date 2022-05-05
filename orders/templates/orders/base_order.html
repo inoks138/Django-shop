@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block additional_links %}
+<link href="{% static 'css/order_styles.css' %}" rel="stylesheet">
+<script src="{% static 'js/orders_scripts.js' %}"></script>
+{% endblock %}
+
+{% block header %}
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="navbar-brand" href="{% url 'home' %}">
+                        <img src="{% static 'img/superman-logo.png' %}" width="95" alt="superman-logo">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block cart %}{% endblock %}

@@ -15,6 +15,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
     document.getElementById("continue-shopping").onclick = function(event){
         closeCart();
     };
+    document.getElementById("cart-empty-continue").onclick = function(event){
+        closeCart();
+    }
     document.getElementById("nav-cart").onclick = function(event){
         if(cart.style.visibility != "visible")
             openCart();
@@ -40,6 +43,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     var cart_items = document.getElementById('cart-items');
     var total_price_el = document.getElementById("total-price");
+    var cart_content = document.getElementsByClassName('cart-content')[0]
+    var cart_empty = document.getElementsByClassName('cart-empty')[0]
 
     var remove_cart_forms = document.getElementsByClassName('cart-item-delete-form');
     function removeCartEventHandler(event){
@@ -64,6 +69,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         cart_item = document.getElementById(`cart-item-${data['slug']}`)
         cart_items.removeChild(cart_item);
+
+        if (data['cart_is_empty']){
+            cart_content.classList.add('disabled')
+            cart_empty.classList.remove('disabled')
+        }
     }
 
     for (var i = 0; i < remove_cart_forms.length; i++) {
@@ -89,6 +99,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
     function addCartRender(data){
         toastr.success(data['message']);
+
+        if (data['cart_was_empty']){
+            cart_content.classList.remove('disabled')
+            cart_empty.classList.add('disabled')
+        }
 
         if (data['quantity'] == 1){
             var cart_item = document.createElement("div");

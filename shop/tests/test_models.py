@@ -21,7 +21,7 @@ class ShopModelTest(TestCase):
         self.comment = Comment.objects.create(content="Comment content", user=self.user1, product=self.product)
 
     def test_brand_get_absolute_url(self):
-        self.assertEqual(self.brand.get_absolute_url(), '/brand/krutoi-brend')
+        self.assertEqual(self.brand.get_absolute_url(), '/catalog?brands=krutoi-brend')
 
     def test_category_str_method(self):
         self.assertEqual(str(self.child_category), 'child категория')

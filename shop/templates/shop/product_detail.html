@@ -10,10 +10,6 @@
 <link href="{% static 'css/pagination.css' %}" rel="stylesheet">
 <script src="{% static 'js/product_scripts.js' %}"></script>
 <script src="{% static 'js/comments_scripts.js' %}"></script>
-
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
 {% endblock %}
 
 {% block title %}
@@ -38,11 +34,19 @@
     <div class="col-md-4">
         <img src="{{ product.photo.url }}" alt="{{ product.title }}" width="440px">
     </div>
-    <div class="col-md-5">
+    <div class="col-md-5 product-info">
         <p class="brand">{{ product.brand.title }}</p>
         <p class="title">{{ product.title }} {{ product.brand.title }}</p>
         <p class="code">Код товара: {{ product.pk }}</p>
         <p class="price">{{ product.price }} грн</p>
+
+        <form action="{% url 'add_cart' product.id %}" method="post" class="add_cart_form">
+            {% csrf_token %}
+            <button type="submit" class="product-btn_cart">
+                <span>В корзину</span>
+            </button>
+        </form>
+
     </div>
 </div>
 
@@ -121,9 +125,9 @@
                         <div class="comment__controls">
                             <div class="comment__reply">ответить</div>
                             <div class="comment__rating__wrap">
-                                <div class="comment__like{% if user in node.comment_like.users.all %} voted{% endif %}"></div>
-                                <div class="comment__rating">{{ node.count_rating }}</div>
-                                <div class="comment__dislike{% if user in node.comment_dislike.users.all %} voted{% endif %}"></div>
+                                <div class="comment__like{% if  node.pk in liked %} voted{% endif %}"></div>
+                                <div class="comment__rating">{{ node.rating }}</div>
+                                <div class="comment__dislike{% if node.pk in disliked %} voted{% endif %}"></div>
                             </div>
                         </div>
                     </div>

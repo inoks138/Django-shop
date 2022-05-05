@@ -37,10 +37,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
         .then(json => removeOrderItemRender(json));
     };
     function removeOrderItemRender(data){
-        total_price_el.innerText = `${Number(data['total_price'])} грн`;
+        if(data['cart_is_empty']){
+            window.location.replace('/')
+        }
+        else{
+            total_price_el.innerText = `${Number(data['total_price'])} грн`;
 
-        order_item = document.getElementById(`order-item-${data['slug']}`)
-        order_items.removeChild(order_item);
+            order_item = document.getElementById(`order-item-${data['slug']}`)
+            order_items.removeChild(order_item);
+        }
     }
     for (var i = 0; i < remove_order_forms.length; i++) {
         remove_order_forms[i].addEventListener('submit', removeOrderItemEventHandler);

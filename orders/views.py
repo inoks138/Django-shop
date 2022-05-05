@@ -1,16 +1,16 @@
-from django.core.exceptions import ValidationError, PermissionDenied
-from django.utils.translation import gettext as _
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 from django.shortcuts import render
+from django.urls import reverse_lazy
+
 from .models import OrderItem
 from .forms import OrderCreateForm
 from cart.cart import Cart
 
 
+@login_required(login_url=reverse_lazy('login'))
 def order_create(request):
-    if not request.user.is_authenticated:
-        raise PermissionDenied()
-
     cart = Cart(request)
     if request.method == 'POST':
         form = OrderCreateForm(request.POST)

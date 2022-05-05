@@ -56,6 +56,7 @@ class CartTest(TestCase):
             'total_it_price': '600.00',
             'total_price': '1200.00',
             'remove_cart_url': '/cart/remove/1',
+            'cart_was_empty': False,
             'message': 'Товар успешно добавлен в корзину',
         }
         self.assertEqual(data, expected_data)
@@ -69,6 +70,7 @@ class CartTest(TestCase):
         expected_data = {
             'slug': self.product2.slug,
             'total_price': '400.00',
+            'cart_is_empty': False,
             'message': 'Товар убран из корзины',
         }
         self.assertEqual(data, expected_data)

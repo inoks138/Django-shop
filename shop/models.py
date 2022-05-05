@@ -19,7 +19,7 @@ class Category(MPTTModel):
     def get_products(self):
         """Return all self and descendants products"""
         categories = self.get_descendants(include_self=True)
-        products = Product.objects.filter(category__in=categories)
+        products = Product.objects.select_related('brand').filter(category__in=categories)
         return products
 
     def save(self, **kwargs):
@@ -46,7 +46,7 @@ class Brand(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('brand', kwargs={"slug": self.slug})
+        return reverse('catalog') + "?brands=" + self.slug
 
     class Meta:
         verbose_name = 'Бренд'
