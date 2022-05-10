@@ -95,7 +95,7 @@ class Comment(MPTTModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
 
     def __str__(self):
-        return f"{self.user.username} - {self.content[:12]}{'...' if len(self.content) > 12 else ''}"
+        return f"{self.content[:12]}{'...' if len(self.content) > 12 else ''}"
 
     class Meta:
         verbose_name = 'Комментарий'

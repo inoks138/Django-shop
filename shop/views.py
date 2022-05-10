@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
 from django.views import View
 from django.views.generic import DetailView, ListView
 from mptt.querysets import TreeQuerySet
@@ -12,6 +13,7 @@ from shop.forms import AddCommentForm
 from shop.models import Comment, CommentDislike, CommentLike
 from .models import Product, Category, Brand
 from cart.forms import CartAddProductForm
+from .tasks import send_notification_mail
 from .templatetags.comments_tags import calc_date
 
 
@@ -208,6 +210,19 @@ class AddComment(View):
 
         comment = Comment.objects.create(user=user, product=product, content=content, parent=parent)
         comment_is_root_node = comment.is_root_node()
+
+        if parent_id:
+            parent_comment = Comment.objects.select_related('user').get(id=parent_id)
+            receiver = Comment.objects.get(id=parent_id).user
+
+            send_notification_mail.delay(
+                user_mail=receiver.email,
+                user_comment_text=str(parent_comment),
+                user_comment_date=parent_comment.created_at.strftime("%H:%M - %d %B %Y"),
+                sender_username=user.username,
+                product_title=product.title,
+                url=request.build_absolute_uri(reverse('product', kwargs={'slug': product.slug}))
+            )
 
         return JsonResponse({
             'id': comment.id,
